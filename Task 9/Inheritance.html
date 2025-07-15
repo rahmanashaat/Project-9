@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Animal Shelter System</title>
+</head>
+<body>
+  <h1>Animal Shelter</h1>
+  <div id="animal-list"></div>
+<style>
+    body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 30px;
+}
+
+.animal-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  padding: 20px;
+  width: 300px;
+  text-align: left;
+}
+
+.animal-card p {
+  margin: 10px 0;
+}
+
+button {
+  padding: 8px 12px;
+  margin-top: 10px;
+  margin-right: 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+</style>
+  <script>
+// Base Animal class
+class Animal {
+  constructor(name, age, species) {
+    this.name = name;
+    this.age = age;
+    this.species = species;
+    this._health = "hungry";
+  }
+
+  feed() {
+    this._health = "well-fed";
+  }
+
+  getHealth() {
+    return this._health;
+  }
+
+  getInfo() {
+    return `${this.species} named ${this.name}, Age: ${this.age}, Health: ${this._health}`;
+  }
+
+  makeSound() {
+    return "Some generic animal sound.";
+  }
+}
+
+// Dog class inherits from Animal
+class Dog extends Animal {
+  constructor(name, age, breed) {
+    super(name, age, "Dog");
+    this.breed = breed;
+  }
+
+  makeSound() {
+    return "Woof!";
+  }
+
+  getInfo() {
+    return `${this.species} (${this.breed}) named ${this.name}, Age: ${this.age}, Health: ${this.getHealth()}`;
+  }
+}
+
+// Cat class inherits from Animal
+class Cat extends Animal {
+  constructor(name, age, isIndoor) {
+    super(name, age, "Cat");
+    this.isIndoor = isIndoor;
+  }
+
+  makeSound() {
+    return "Meow!";
+  }
+
+  getInfo() {
+    const type = this.isIndoor ? "Indoor" : "Outdoor";
+    return `${type} ${this.species} named ${this.name}, Age: ${this.age}, Health: ${this.getHealth()}`;
+  }
+}
+
+// Create animal objects
+const animals = [
+  new Dog("Buddy", 3, "Labrador"),
+  new Cat("Whiskers", 2, true),
+  new Dog("Rocky", 4, "German Shepherd"),
+  new Cat("Mittens", 1, false)
+];
+
+// Display all animals
+function renderAnimals() {
+  const container = document.getElementById("animal-list");
+  container.innerHTML = "";
+
+  animals.forEach((animal, index) => {
+    const card = document.createElement("div");
+    card.className = "animal-card";
+
+    const info = document.createElement("p");
+    info.textContent = animal.getInfo();
+
+    const feedBtn = document.createElement("button");
+    feedBtn.textContent = "Feed";
+    feedBtn.onclick = () => {
+      animal.feed();
+      renderAnimals();
+    };
+
+    const soundBtn = document.createElement("button");
+    soundBtn.textContent = "Make Sound";
+    soundBtn.onclick = () => {
+      alert(`${animal.name} says: ${animal.makeSound()}`);
+    };
+
+    card.appendChild(info);
+    card.appendChild(feedBtn);
+    card.appendChild(soundBtn);
+
+    container.appendChild(card);
+  });
+}
+
+// Initial render
+renderAnimals();
+
+  </script>
+</body>
+</html>

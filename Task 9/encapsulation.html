@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Animal Shelter</title>
+</head>
+<body>
+  <h1>Animal Shelter</h1>
+  <div id="animal-list"></div>
+  <button onclick="shelter.listAnimals()">List All Animals in Console</button>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  text-align: center;
+  padding: 20px;
+}
+
+h1 {
+  color: #333;
+}
+
+.animal-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.1);
+  margin: 20px auto;
+  padding: 20px;
+  width: 300px;
+  text-align: left;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  margin: 10px 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+</style>
+  <script>
+// === Animal Base Class ===
+class Animal {
+  constructor(name, age, species) {
+    this.name = name;
+    this.age = age;
+    this.species = species;
+    this._health = "hungry";
+  }
+
+  feed() {
+    this._health = "well-fed";
+  }
+
+  getHealth() {
+    return this._health;
+  }
+
+  makeSound() {
+    return "Generic animal sound.";
+  }
+
+  adopt() {
+    return `${this.name} has been adopted!`;
+  }
+
+  getInfo() {
+    return `${this.species} named ${this.name}, Age: ${this.age}, Health: ${this._health}`;
+  }
+}
+
+// === Dog Subclass ===
+class Dog extends Animal {
+  constructor(name, age, breed) {
+    super(name, age, "Dog");
+    this.breed = breed;
+  }
+
+  makeSound() {
+    return "Woof!";
+  }
+
+  getInfo() {
+    return `Dog (${this.breed}) named ${this.name}, Age: ${this.age}, Health: ${this.getHealth()}`;
+  }
+}
+
+// === Cat Subclass ===
+class Cat extends Animal {
+  constructor(name, age, isIndoor) {
+    super(name, age, "Cat");
+    this.isIndoor = isIndoor;
+  }
+
+  makeSound() {
+    return "Meow!";
+  }
+
+  getInfo() {
+    const type = this.isIndoor ? "Indoor" : "Outdoor";
+    return `${type} Cat named ${this.name}, Age: ${this.age}, Health: ${this.getHealth()}`;
+  }
+}
+
+// === Shelter Class ===
+class Shelter {
+  #animals = [];
+
+  addAnimal(animal) {
+    this.#animals.push(animal);
+  }
+
+  adoptAnimal(name) {
+    const index = this.#animals.findIndex(animal => animal.name === name);
+    if (index !== -1) {
+      const adopted = this.#animals.splice(index, 1)[0];
+      alert(adopted.adopt());
+      this.render();
+    } else {
+      alert("Animal not found!");
+    }
+  }
+
+  listAnimals() {
+    console.log("Animals in the shelter:");
+    this.#animals.forEach(animal => {
+      console.log(`${animal.name} - ${animal.species} - ${animal.makeSound()}`);
+    });
+  }
+
+  render() {
+    const container = document.getElementById("animal-list");
+    container.innerHTML = "";
+
+    this.#animals.forEach(animal => {
+      const card = document.createElement("div");
+      card.className = "animal-card";
+
+      const info = document.createElement("p");
+      info.textContent = animal.getInfo();
+
+      const feedBtn = document.createElement("button");
+      feedBtn.textContent = "Feed";
+      feedBtn.onclick = () => {
+        animal.feed();
+        this.render();
+      };
+
+      const soundBtn = document.createElement("button");
+      soundBtn.textContent = "Make Sound";
+      soundBtn.onclick = () => {
+        alert(`${animal.name} says: ${animal.makeSound()}`);
+      };
+
+      const adoptBtn = document.createElement("button");
+      adoptBtn.textContent = "Adopt";
+      adoptBtn.onclick = () => this.adoptAnimal(animal.name);
+
+      card.appendChild(info);
+      card.appendChild(feedBtn);
+      card.appendChild(soundBtn);
+      card.appendChild(adoptBtn);
+
+      container.appendChild(card);
+    });
+  }
+}
+
+// === App Logic ===
+const shelter = new Shelter();
+
+// Add sample animals
+shelter.addAnimal(new Dog("Buddy", 3, "Labrador"));
+shelter.addAnimal(new Cat("Whiskers", 2, true));
+shelter.addAnimal(new Dog("Rocky", 4, "German Shepherd"));
+shelter.addAnimal(new Cat("Mittens", 1, false));
+
+// Render UI
+shelter.render();
+
+  </script>
+</body>
+</html>
